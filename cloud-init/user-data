@@ -1,0 +1,93 @@
+#cloud-config
+
+package_update: true
+package_upgrade: true
+
+packages:
+  # General utilities
+  - git
+  - curl
+  - vim
+  - tmux
+  - htop
+
+  # Security / automatic updates
+  - unattended-upgrades
+  - apt-listchanges
+
+  # Docker
+  - docker.io
+  - docker-compose
+
+  # Screensaver
+  - xscreensaver
+  - xscreensaver-data
+  - xscreensaver-gl
+  - xscreensaver-gl-extra
+
+ssh_pwauth: false
+disable_root: true
+
+write_files:
+  - path: /etc/ssh/sshd_config.d/99-hardening.conf
+    owner: root:root
+    permissions: '0644'
+    content: |
+      PermitRootLogin no
+      PasswordAuthentication no
+      KbdInteractiveAuthentication no
+      PermitEmptyPasswords no
+      PubkeyAuthentication yes
+
+      MaxAuthTries 3
+      LoginGraceTime 30
+
+      X11Forwarding no
+      PermitUserEnvironment no
+      PermitTunnel no
+
+      # Required for VS Code Remote SSH
+      AllowTcpForwarding yes
+
+      GSSAPIAuthentication no
+      IgnoreRhosts yes
+      HostbasedAuthentication no
+
+      ClientAliveInterval 300
+      ClientAliveCountMax 2
+
+  - path: /etc/apt/apt.conf.d/20auto-upgrades
+    owner: root:root
+    permissions: '0644'
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+
+  - path: /etc/apt/apt.conf.d/52unattended-upgrades-local
+    owner: root:root
+    permissions: '0644'
+    content: |
+      Unattended-Upgrade::Automatic-Reboot "false";
+      Unattended-Upgrade::Remove-Unused-Dependencies "true";
+
+runcmd:
+  # Validate SSH configuration before applying it.
+  - /usr/sbin/sshd -t
+
+  # Apply SSH hardening.
+  - systemctl restart ssh
+
+  # Enable automatic updates.
+  - systemctl enable unattended-upgrades
+  - systemctl restart unattended-upgrades
+
+  # Enable Bluetooth.
+  - systemctl enable bluetooth
+  - systemctl start bluetooth
+
+  # Enable Docker.
+  - systemctl enable docker
+  - systemctl start docker
+
+  # Allow the existing Imager-created user to use Docker.
+  - usermod -aG docker "$(getent passwd 1000 | cut -d: -f1)"
