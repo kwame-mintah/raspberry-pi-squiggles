@@ -1,0 +1,12 @@
+# Secrets
+secrets/*
+!secrets/.gitkeep
+
+# Local cloud-init files containing credentials
+cloud-init/network-config
+cloud-init/user-data.local
+
+# SSH private keys
+*.pem
+id_*
+*.key
