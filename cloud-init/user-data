@@ -90,4 +90,33 @@ runcmd:
   - systemctl start docker
 
   # Allow the existing Imager-created user to use Docker.
-  - usermod -aG docker "$(getent passwd 1000 | cut -d: -f1)"
+  - |
+      ADMIN_USER="$(getent passwd 1000 | cut -d: -f1)"
+      if [ -n "$ADMIN_USER" ]; then
+        usermod -aG docker "$ADMIN_USER"
+      else
+        echo "No user with UID 1000 found"
+        exit 1
+      fi
+
+  # Start XScreenSaver automatically for the desktop user.
+  - |
+      ADMIN_USER="$(getent passwd 1000 | cut -d: -f1)"
+      ADMIN_HOME="$(getent passwd 1000 | cut -d: -f6)"
+
+      if [ -n "$ADMIN_USER" ] && [ -d "$ADMIN_HOME" ]; then
+        install -d -o "$ADMIN_USER" -g "$ADMIN_USER" "$ADMIN_HOME/.config/autostart"
+
+        cat > "$ADMIN_HOME/.config/autostart/xscreensaver.desktop" <<'EOF'
+      [Desktop Entry]
+      Type=Application
+      Name=XScreenSaver
+      Comment=Start XScreenSaver daemon
+      Exec=xscreensaver -no-splash
+      Terminal=false
+      X-GNOME-Autostart-enabled=true
+      EOF
+
+        chown "$ADMIN_USER:$ADMIN_USER" \
+          "$ADMIN_HOME/.config/autostart/xscreensaver.desktop"
+      fi
