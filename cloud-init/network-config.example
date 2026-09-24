@@ -1,0 +1,13 @@
+network:
+  version: 2
+  renderer: NetworkManager
+
+  wifis:
+    wlan0:
+      dhcp4: true
+      optional: true
+      regulatory-domain: GB
+
+      access-points:
+        "YOUR_WIFI_NAME":
+          password: "YOUR_WIFI_PASSWORD"
