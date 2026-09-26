@@ -1,7 +1,7 @@
 services:
   uptime-kuma:
     image: louislam/uptime-kuma:${UPTIME_KUMA_TAG:-2-slim-rootless}
-    platform: "linux/amd64"
+    platform: ${PLATFORM:-linux/arm64}
     restart: unless-stopped
 
     ports:
