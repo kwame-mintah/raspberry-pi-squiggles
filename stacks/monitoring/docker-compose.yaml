@@ -1,6 +1,6 @@
 services:
   uptime-kuma:
-    image: louislam/uptime-kuma:${UPTIME_KUMA_TAG:-latest}
+    image: louislam/uptime-kuma:${UPTIME_KUMA_TAG:-2-slim-rootless}
     platform: "linux/amd64"
     restart: unless-stopped
 
