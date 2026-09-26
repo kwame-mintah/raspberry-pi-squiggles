@@ -1,6 +1,7 @@
 services:
   portainer:
     image: portainer/portainer-ce:${PORTAINER_TAG:-latest}
+    container_name: portainer
     platform: ${PLATFORM:-linux/arm64}
     restart: unless-stopped
 

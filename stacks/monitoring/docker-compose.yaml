@@ -1,6 +1,7 @@
 services:
   uptime-kuma:
     image: louislam/uptime-kuma:${UPTIME_KUMA_TAG:-2-slim-rootless}
+    container_name: uptime-kuma
     platform: ${PLATFORM:-linux/arm64}
     restart: unless-stopped
 
