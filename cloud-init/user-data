@@ -31,7 +31,7 @@ disable_root: true
 write_files:
   - path: /etc/ssh/sshd_config.d/99-hardening.conf
     owner: root:root
-    permissions: '0644'
+    permissions: "0644"
     content: |
       PermitRootLogin no
       PasswordAuthentication no
@@ -58,14 +58,14 @@ write_files:
 
   - path: /etc/apt/apt.conf.d/20auto-upgrades
     owner: root:root
-    permissions: '0644'
+    permissions: "0644"
     content: |
       APT::Periodic::Update-Package-Lists "1";
       APT::Periodic::Unattended-Upgrade "1";
 
   - path: /etc/apt/apt.conf.d/52unattended-upgrades-local
     owner: root:root
-    permissions: '0644'
+    permissions: "0644"
     content: |
       Unattended-Upgrade::Automatic-Reboot "false";
       Unattended-Upgrade::Remove-Unused-Dependencies "true";
@@ -91,32 +91,32 @@ runcmd:
 
   # Allow the existing Imager-created user to use Docker.
   - |
-      ADMIN_USER="$(getent passwd 1000 | cut -d: -f1)"
-      if [ -n "$ADMIN_USER" ]; then
-        usermod -aG docker "$ADMIN_USER"
-      else
-        echo "No user with UID 1000 found"
-        exit 1
-      fi
+    ADMIN_USER="$(getent passwd 1000 | cut -d: -f1)"
+    if [ -n "$ADMIN_USER" ]; then
+      usermod -aG docker "$ADMIN_USER"
+    else
+      echo "No user with UID 1000 found"
+      exit 1
+    fi
 
   # Start XScreenSaver automatically for the desktop user.
   - |
-      ADMIN_USER="$(getent passwd 1000 | cut -d: -f1)"
-      ADMIN_HOME="$(getent passwd 1000 | cut -d: -f6)"
+    ADMIN_USER="$(getent passwd 1000 | cut -d: -f1)"
+    ADMIN_HOME="$(getent passwd 1000 | cut -d: -f6)"
 
-      if [ -n "$ADMIN_USER" ] && [ -d "$ADMIN_HOME" ]; then
-        install -d -o "$ADMIN_USER" -g "$ADMIN_USER" "$ADMIN_HOME/.config/autostart"
+    if [ -n "$ADMIN_USER" ] && [ -d "$ADMIN_HOME" ]; then
+      install -d -o "$ADMIN_USER" -g "$ADMIN_USER" "$ADMIN_HOME/.config/autostart"
 
-        cat > "$ADMIN_HOME/.config/autostart/xscreensaver.desktop" <<'EOF'
-      [Desktop Entry]
-      Type=Application
-      Name=XScreenSaver
-      Comment=Start XScreenSaver daemon
-      Exec=xscreensaver -no-splash
-      Terminal=false
-      X-GNOME-Autostart-enabled=true
-      EOF
+      cat > "$ADMIN_HOME/.config/autostart/xscreensaver.desktop" <<'EOF'
+    [Desktop Entry]
+    Type=Application
+    Name=XScreenSaver
+    Comment=Start XScreenSaver daemon
+    Exec=xscreensaver -no-splash
+    Terminal=false
+    X-GNOME-Autostart-enabled=true
+    EOF
 
-        chown "$ADMIN_USER:$ADMIN_USER" \
-          "$ADMIN_HOME/.config/autostart/xscreensaver.desktop"
-      fi
+      chown "$ADMIN_USER:$ADMIN_USER" \
+        "$ADMIN_HOME/.config/autostart/xscreensaver.desktop"
+    fi
