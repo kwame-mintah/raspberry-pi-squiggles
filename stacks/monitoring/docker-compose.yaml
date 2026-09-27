@@ -21,6 +21,9 @@ services:
     platform: ${PLATFORM:-linux/arm64}
     restart: unless-stopped
 
+    environment:
+      - GLANCES_OPT=-w
+
     ports:
       - "61208:61208"
 
