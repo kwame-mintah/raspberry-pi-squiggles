@@ -15,5 +15,22 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - uptime_kuma_data:/app/data
 
+  glances:
+    image: nicolargo/glances:${GLANCES_TAG:-latest}
+    container_name: glances
+    platform: ${PLATFORM:-linux/arm64}
+    restart: unless-stopped
+
+    ports:
+      - "61208:61208"
+
+    pid: host
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # Host system information
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+
 volumes:
   uptime_kuma_data:
