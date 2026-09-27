@@ -1,6 +1,6 @@
 services:
   gshock-time-server:
-    image: collective.local:5000/gshock-time-server:${GSHOCK_TAG:-latest}
+    image: collective.local:5000/gshock-time-server:${GSHOCK_TAG:-915a568}
     container_name: gshock-time-server
     restart: unless-stopped
 
