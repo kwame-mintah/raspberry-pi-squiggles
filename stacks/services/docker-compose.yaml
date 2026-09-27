@@ -1,0 +1,12 @@
+services:
+  gshock-time-server:
+    image: collective.local:5000/gshock-time-server:${GSHOCK_TAG:-latest}
+    container_name: gshock-time-server
+    restart: unless-stopped
+
+    volumes:
+      # Allow Bleak to communicate with the host's BlueZ daemon
+      - /run/dbus:/run/dbus:ro
+
+    environment:
+      - BLEAK_DBUS_AUTH_UID=0
