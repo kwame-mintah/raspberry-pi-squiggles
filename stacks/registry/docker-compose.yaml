@@ -2,6 +2,7 @@ services:
   registry:
     image: registry:${REGISTRY_TAG:-latest}
     container_name: docker-registry
+    platform: ${PLATFORM:-linux/arm64}
     restart: unless-stopped
 
     ports:
@@ -13,6 +14,7 @@ services:
   registry-ui:
     image: joxit/docker-registry-ui:${JOXIT_TAG:-latest}
     container_name: docker-registry-ui
+    platform: ${PLATFORM:-linux/arm64}
     restart: unless-stopped
 
     environment:
