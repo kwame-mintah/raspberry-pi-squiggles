@@ -12,8 +12,8 @@ services:
     environment:
       - BLEAK_DBUS_AUTH_UID=0
   n8n:
-    image: n8nio/n8n
-    container_name: n8n:${N8N_TAG:-latest}
+    image: n8nio/n8n:${N8N_TAG:-latest}
+    container_name: n8n
     platform: ${PLATFORM:-linux/arm64}
     restart: unless-stopped
 
